@@ -1,0 +1,9 @@
+# Application environment
+project.application-environment=
+
+# Subdirectory your project library files reside in
+# Relative to project.base-directory
+project.project-library-subdirectory=@PROJECT_NAME@
+
+# Your rewrite base
+project.rewrite-base=/

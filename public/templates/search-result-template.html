@@ -1,0 +1,13 @@
+{{#each results}}
+<li class="game-search-result" data-game-title="{{ name }}">
+{{#if image}}
+    <div class="game-search-thumb" style="background-image: url('{{ image.thumb_url }}')"></div>
+{{else}}
+    <div class="game-search-thumb" style="background-image: url('{{ ../../defaultThumbnailUrl }}')"></div>
+{{/if}}
+    <div class="game-search-description">
+        <h3 class="h h-2">{{ name }}</h3>
+        <p>{{ deck }}</p>
+    </div>
+</li>
+{{/each}}

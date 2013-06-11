@@ -1,0 +1,421 @@
+/* ---------------------------------------------------------------------
+Original Author: Brad Anderson
+Contributors: N/A
+
+Target Browsers: All
+Media Type: Screen, Projection
+Width: All Sizes
+------------------------------------------------------------------------ */
+
+/* ---------------------------------------------------------------------
+RESET CSS (thanks Eric Meyer)
+------------------------------------------------------------------------ */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font-weight: inherit;
+    font-style: inherit;
+    font-family: inherit;
+    vertical-align: baseline;
+}
+
+body {
+    line-height: 1;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+:focus {
+    outline: 0;
+}
+
+/* Always show a vertical scrollbar, even when there is no scrolling */
+html {
+    overflow-y: scroll;
+}
+
+/* Don't let iOS and WinMobile mobile-optimize text for you */
+/* Turn this rule on for mobile sites or sites using mediaqueries */
+/*
+html {
+    -webkit-text-size-adjust: none;
+    -ms-text-size-adjust: none;
+}
+*/
+
+/* ---------------------------------------------------------------------
+ HTML5 Block / Inline Block declarations
+------------------------------------------------------------------------ */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+audio, canvas, video {
+    display: inline-block;
+}
+
+/* ---------------------------------------------------------------------
+ Form Reset Styles
+------------------------------------------------------------------------ */
+input[type=search]::-webkit-search-cancel-button,
+input[type=search]::-webkit-search-decoration,
+input[type=search]::-webkit-search-results-button,
+input[type=search]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+}
+
+input[type=search] {
+    -webkit-appearance: none;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+
+textarea {
+    overflow: auto;
+    vertical-align: top;
+    resize: vertical;
+}
+
+::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/* ---------------------------------------------------------------------
+ Base Styles
+------------------------------------------------------------------------ */
+html, body {
+    height: 100%;
+}
+
+body {
+    background: url('../images/subtle-carbon-pattern.png');
+    font-family: Helvetica, Arial, sans-serif;
+    color: #fff;
+}
+
+.wrap {
+    margin-left: auto;
+    margin-right: auto;
+    width: 960px;
+}
+
+.center {
+    text-align: center;
+}
+
+.centered {
+    display: inline-block;
+}
+
+/* ---------------------------------------------------------------------
+ Coverflow Styles
+------------------------------------------------------------------------ */
+.h {
+    font-family: 'Doppio One';
+}
+
+.h-1 {
+    font-size: 24px;
+    text-shadow: 0 0 10px rgba(242, 255, 133, .9);
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    margin-bottom: 1em;
+}
+
+.h-2 {
+    margin-bottom: 0.25em;
+    text-align: center;
+    font-family: 'Doppio One', Arial, sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    text-shadow: 0 1px rgba(255, 255, 255, 0.8);
+    color: #333;
+}
+
+.h-3 {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    margin-bottom: 1em;
+}
+
+/* ---------------------------------------------------------------------
+ Module Styles
+------------------------------------------------------------------------ */
+.mod-add-game {
+    position: absolute;
+    top: -88px;
+    z-index: 1;
+    width: 100%;
+    height: 106px;
+    background: url('../images/grey-bar-bg.png');
+    -webkit-transition: top 0.66s ease-out;
+}
+
+.mod-add-game.active {
+    top: 0px;
+}
+
+.add-game-tab-container {
+    position: absolute;
+    width: 100%;
+    bottom: -22px;
+}
+
+.add-game-tab {
+    display: block;
+    background: url('../images/grey-bar-tab.png');
+    width: 246px;
+    height: 32px;
+    line-height: 15px;
+    margin: auto;
+    text-decoration: none;
+}
+
+/* ---------------------------------------------------------------------
+ Form Styles
+------------------------------------------------------------------------ */
+.text-input {
+    background: #efefef;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.66);
+    border-radius: 4px;
+    border: solid 1px #ddd;
+}
+
+.game-search-form {
+    position: relative;
+    margin: 8px auto 0;
+    width: 430px;
+}
+
+.game-search-bar {
+    margin: auto;
+    padding: 8px 12px;
+    position: relative;
+}
+
+.game-search-input {
+    color: #555;
+}
+
+.input-inside {
+    width: 100%;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    font-family: 'Doppio One', Arial, sans-serif;
+}
+
+.btn-inside {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+/* ---------------------------------------------------------------------
+ Section Styles
+------------------------------------------------------------------------ */
+.games-wanted-section {
+    margin-top: 80px;
+}
+
+.game-search-results {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+}
+
+.game-search-list {
+    margin: -5px 5px 0;
+    background: #f9f9f9;
+    background: -moz-linear-gradient(top,  #f9f9f9 0%, #c6c6c6 99%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f9f9f9), color-stop(99%,#c6c6c6));
+    background: -webkit-linear-gradient(top,  #f9f9f9 0%,#c6c6c6 99%);
+    background: linear-gradient(to bottom,  #f9f9f9 0%,#c6c6c6 99%);
+}
+
+.game-search-result {
+    overflow: hidden;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.game-search-result.active {
+    background: #3cc2e3;
+    background: -moz-linear-gradient(top,  #3cc2e3 0%, #158fbc 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3cc2e3), color-stop(100%,#158fbc));
+    background: -webkit-linear-gradient(top,  #3cc2e3 0%,#158fbc 100%);
+    background: linear-gradient(to bottom,  #3cc2e3 0%,#158fbc 100%);
+}
+
+.game-search-result.active .game-search-description {
+    color: #fff;
+}
+
+.game-search-result.active .h {
+    color: #fff;
+    text-shadow: 0 -1px #217796;
+}
+
+.game-search-thumb {
+    width: 100px;
+    height: 83px;
+    margin-right: 12px;
+    float: left;
+    background-position: center center;
+}
+
+.game-search-description .h {
+    text-align: left;
+}
+
+.game-search-description {
+    color: #555;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+/* ---------------------------------------------------------------------
+ Coverflow Styles
+------------------------------------------------------------------------ */
+
+.cover-flow {
+    position: relative;
+}
+
+.cover-flow-carousel {
+    margin-left: 0;
+    -webkit-transition: margin-left 0.5s ease-out;
+       -moz-transition: margin-left 0.5s ease-out;
+    width: 9999px;
+}
+
+.cover-flow-item {
+    float: left;
+    position: relative;
+    margin-right: 21px;
+    -webkit-perspective: 1000px;
+       -moz-perspective: 1000px;
+    -webkit-transform-style: preserve-3d;
+       -moz-transform-style: preserve-3d;
+}
+
+.cover-flow-container {
+    opacity: 1;
+    -webkit-transition: -webkit-transform 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+.leftest .cover-flow-container {
+    opacity: 0.75;
+    -webkit-transform: rotateY(30deg);
+       -moz-transform: rotateY(30deg);
+}
+
+.rightest .cover-flow-container {
+    opacity: 0.75;
+    -webkit-transform: rotateY(-30deg);
+       -moz-transform: rotateY(-30deg);
+}
+
+.hidden .cover-flow-container {
+    opacity: 0;
+}
+
+.cover-flow-container .h {
+    opacity: 1;
+    -webkit-transition: opacity 0.5s ease-out;
+
+}
+.leftest .h, .rightest .h {
+    opacity: 0;
+}
+
+.cover-flow-cover {
+    box-shadow: 0 0 10px 1px rgba(59, 138, 179, 0.75);
+}
+
+.cover-flow-reflection {
+    position: absolute;
+    -webkit-transform: scaleY(-1) translateY(-10px);
+       -moz-transform: scaleY(-1) translateY(-10px);
+
+    -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.33, rgba(0,0,0,0)), color-stop(1, rgba(0,0,0,0.66)));
+    mask: url('../images/mask.svg#mask');
+    left: 0;
+    opacity: 0.4;
+}
+
+.cover-flow-nav {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+}
+
+.cover-flow-arrow {
+    display: block;
+    width: 31px;
+    height: 86px;
+    background: url('../images/cover-flow-arrows-sprite.png');
+    text-indent: -999em;
+    position: absolute;
+    top: 70px;
+}
+
+.cover-flow-arrow.prev {
+    left: -30px;
+}
+
+.cover-flow-arrow.prev:hover {
+    background-position: 0 bottom;
+}
+
+.cover-flow-arrow.prev:active {
+    background-position: 0 0;
+}
+
+.cover-flow-arrow.next {
+    background-position: right 0;
+    right: 30px;
+}
+
+.cover-flow-arrow.next:hover{
+    background-position: right bottom;
+}
+
+.cover-flow-arrow.next:active {
+    background-position: right 0;
+}

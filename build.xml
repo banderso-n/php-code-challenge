@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Phing targets" basedir="." default="">
+    <property file="build.properties" />
+
+    <property name="project.base-directory" value="${project.basedir}" />
+    <property name="project.data-subdirectory" value="data" />
+    <property name="project.library-subdirectory" value="library" />
+    <property name="project.build-subdirectory" value="build" />
+    <property name="project.tests-subdirectory" value="tests" />
+
+    <path id="project.class-path">
+        <pathelement dir="${project.library-subdirectory}" />
+    </path>
+    
+    <fileset id="project.reportable-files" dir="${project.basedir}">
+        <include name="${project.project-library-subdirectory}/**/*.php" />
+        <include name="application/**/*.php" />
+    </fileset>
+
+    <taskdef name="zendproperties" classname="Bear_Phing_Task_ZendConfigPropertiesTask">
+        <classpath refid="project.class-path" />
+    </taskdef>
+
+    <zendproperties applicationEnvironment="${project.application-environment}" />
+
+    <!-- Build targets -->
+    <target name="build" depends="build:install" description="Build all the reports">
+        <phingcall target="build:api-documentation"/>
+        <!--<phingcall target="build:checkstyle"/>-->
+        <!--<phingcall target="build:code-browser"/>-->
+        <phingcall target="build:copy-paste-detection"/>
+        <phingcall target="build:dependency-analysis"/>
+        <!--<phingcall target="build:lines-of-code"/>-->
+        <phingcall target="build:project-mess-detection"/>
+        <phingcall target="build:unit-tests"/>
+    </target>
+
+    <target name="build:install">
+        <!--Install the build directory-->
+
+        <mkdir dir="${project.build-subdirectory}"/>
+        <mkdir dir="${project.build-subdirectory}/api"/>
+        <!--<mkdir dir="${project.build-subdirectory}/code-browser"/>-->
+        <mkdir dir="${project.build-subdirectory}/coverage"/>
+        <mkdir dir="${project.build-subdirectory}/logs"/>
+        <mkdir dir="${project.build-subdirectory}/pdepend"/>
+    </target>
+
+    <target name="build:api-documentation" depends="build:install" description="Generate API documentation">
+        <phpdoc title="API Documentation" destdir="${project.build-subdirectory}/api" output="HTML:Smarty:PHP" quiet="true">
+            <fileset refid="project.reportable-files" />
+        </phpdoc>
+    </target>
+
+    <!--<target name="build:checkstyle" depends="build:install" description="Generate a checkstyle report using PHP_CodeSniffer">-->
+        <!--
+        Broken
+
+        http://www.phing.info/trac/ticket/642 <- does not appear to have fixed problem
+        http://pear.php.net/bugs/bug.php?id=18247 <- appears to exist still in upstream
+
+        <phpcodesniffer standard="Zend" format="checkstyle" allowedFileExtensions="php phtml">
+            <fileset refid="project.reportable-files" />
+            <formatter type="checkstyle" outfile="${project.build-subdirectory}/logs/checkstyle.xml" />
+        </phpcodesniffer>
+        -->
+    <!--</target>-->
+
+    <!--<target name="build:code-browser" depends="build:install" description="Generate a code browser report with PHP_CodeBrowser">-->
+        <!--
+        Doesn't work with filesets, need workaround
+
+        NOTE: double dashes have been removed from the <exec> command so the comment would work. Add them back.
+
+        <exec command="phpcb -log ${project.build-subdirectory}/logs -source ${project.library-subdirectory} -output ${project.build-subdirectory}/code-browser" checkreturn="true" />
+        -->
+    <!--</target>-->
+
+    <target name="build:copy-paste-detection" depends="build:install" description="Generate a copy/paste detection report">
+        <phpcpd minTokens="25" minLines="5">
+            <formatter type="pmd" outfile="${project.build-subdirectory}/logs/cpd.xml" />
+            <fileset refid="project.reportable-files" />
+        </phpcpd>
+    </target>
+
+    <target name="build:dependency-analysis" depends="build:install" description="Generate dependency analysis report and software metric charts">
+        <phpdepend>
+            <logger type="jdepend-xml" outfile="${project.build-subdirectory}/logs/jdepend.xml" />
+            <logger type="jdepend-chart" outfile="${project.build-subdirectory}/pdepend/dependencies.svg" />
+            <logger type="overview-pyramid" outfile="${project.build-subdirectory}/pdepend/overview-pyramid.svg" />
+            <fileset refid="project.reportable-files" />
+        </phpdepend>
+    </target>
+
+    <!--<target name="build:lines-of-code" depends="build:install" description="Generate a lines of code report using PHPLOC">-->
+        <!--
+        Doesn't work with filesets, need workaround
+
+        NOTE: double dashes have been removed from the <exec> command so the comment would work. Add them back.
+
+        <exec command="phploc -log-csv ${project.build-subdirectory}/logs/phploc.csv ${project.library-subdirectory}" checkreturn="true" />
+        -->
+    <!--</target>-->
+
+    <target name="build:project-mess-detection" depends="build:install" description="Generate a PMD report using PHPMD">
+        <phpmd rulesets="codesize,design,naming,unusedcode">
+            <fileset refid="project.reportable-files" />
+            <formatter type="xml" outfile="${project.build-subdirectory}/logs/pmd.xml" />
+        </phpmd>
+    </target>
+
+    <target name="build:unit-tests" depends="build:install" description="Generate an xUnit result and code coverage report using PHPUnit">
+        <coverage-setup database="${project.build-subdirectory}/coverage.db">
+            <fileset refid="project.reportable-files" />
+        </coverage-setup>
+        <phpunit bootstrap="${project.tests-subdirectory}/bootstrap.php" codecoverage="true">
+            <formatter type="clover" outfile="${project.build-subdirectory}/logs/clover.xml" />
+            <formatter type="xml" outfile="${project.build-subdirectory}/logs/junit.xml" />
+            <batchtest name="Application Tests">
+                <fileset dir="${project.tests-subdirectory}/application">
+                    <include name="**/*Test.php"/>
+                </fileset>
+            </batchtest>
+            <batchtest name="Library Tests">
+                <fileset dir="${project.tests-subdirectory}/library">
+                    <include name="**/*Test.php"/>
+                </fileset>
+            </batchtest>
+        </phpunit>
+        <coverage-report outfile="${project.build-subdirectory}/coverage.db">
+            <report todir="${project.build-subdirectory}/coverage" />
+        </coverage-report>
+        <delete file="${project.build-subdirectory}/coverage.db"/>
+    </target>
+
+    <target name="build:uninstall">
+        <!--Uninstall the build directory-->
+        <delete dir="${project.build-subdirectory}"/>
+    </target>
+
+
+    <!-- Data directory targets -->
+    <target name="data:install">
+        <!--Install the data directory-->
+        <mkdir dir="${project.data-subdirectory}" />
+        <mkdir dir="${project.data-subdirectory}/logs" />
+
+        <touch file="${project.data-subdirectory}/logs/application.log" />
+        <touch file="${project.data-subdirectory}/logs/phperrors.log" />
+        
+        <phingcall target="data:set-permissions" />
+
+		<!-- A symlink for the data directory is only necessary if the project.data-diectory it outside of the project.base-directory -->
+		<!-- This version of this script does not support this -->
+        <!--<phingcall target="data:symlink" />-->
+    </target>
+    
+    <target name="data:set-permissions">
+        <!--Set the permission on the data directory-->
+
+        <!-- This would be better to give the Apache group read/write access -->
+        <!-- but not currently possible because user must be in Apache group to chgrp -->
+
+        <!--<exec command="chmod -R g+w ${project.data-directory}"/>-->
+        <!--<exec command="chgrp -R ${apache.group-name} ${project.data-directory}"/>-->
+
+        <exec command="chmod -R a+rwX ${project.data-subdirectory}"/>
+
+    </target>
+    
+    <!--<target name="data:symlink" description="Setup the data directory symlinks">-->
+        <!--<symlink target="${project.data-directory}" link="${project.base-directory}/data" />-->
+    <!--</target>-->
+
+    <target name="data:uninstall">
+        <!--Uninstall the data directory-->
+
+        <delete dir="${project.data-subdirectory}" />
+        <!--<delete file="${project.base-directory}/data" />-->
+    </target>
+    
+    <!-- Htaccess targets -->
+    <target name="htaccess:install">
+        <!--Install the htaccess file-->
+
+        <copy file="${project.base-directory}/public/.htaccess-dist" tofile="${project.base-directory}/public/.htaccess">
+            <filterchain>
+                <replacetokens>
+                    <token key="APPLICATION_ENV" value="${project.application-environment}" />
+                    <token key="REWRITE_BASE" value="${project.rewrite-base}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+    </target>
+    
+    <target name="htaccess:uninstall">
+        <!--Uninstall the htaccess file-->
+        <delete file="${project.base-directory}/public/.htaccess" />
+    </target>
+
+    <!-- Report targets -->
+    <!--<target name="report:checkstyle" description="Run a checkstyle report using PHP_CodeSniffer">-->
+        <!--
+        Broken
+
+        http://www.phing.info/trac/ticket/642 <- does not appear to have fixed problem
+        http://pear.php.net/bugs/bug.php?id=18247 <- appears to exist still in upstream
+
+        <phpcodesniffer standard="Zend" format="checkstyle" allowedFileExtensions="php phtml">
+            <fileset refid="project.reportable-files" />
+            <formatter type="default" usefile="false"/>
+        </phpcodesniffer>
+        -->
+    <!--</target>-->
+
+    <target name="report:copy-paste-detection" description="Run a copy/paste detection using with PHPCPD">
+        <phpcpd minTokens="25" minLines="5">
+            <formatter type="default" usefile="false" />
+            <fileset refid="project.reportable-files" />
+        </phpcpd>
+    </target>
+
+    <!--<target name="report:lines-of-code" description="Run a lines of code report using PHPLOC">-->
+        <!--
+        Doesn't work with filesets, need workaround
+
+        <exec command="phploc ${project.library-subdirectory}" checkreturn="true" />
+        -->
+    <!--</target>-->
+
+    <target name="report:project-mess-detection" description="Run a PMD report using PHPMD">
+        <phpmd rulesets="codesize,design,naming,unusedcode">
+            <fileset refid="project.reportable-files" />
+            <formatter type="text" usefile="false" />
+        </phpmd>
+    </target>
+
+    <target name="report:unit-tests" description="Run the unit tests">
+        <phpunit bootstrap="${project.tests-subdirectory}/bootstrap.php" printsummary="true">
+            <formatter type="plain" usefile="false" />
+            <batchtest name="Application Tests">
+                <fileset dir="${project.tests-subdirectory}/application">
+                    <include name="**/*Test.php" />
+                </fileset>
+            </batchtest>
+            <batchtest name="Library Tests">
+                <fileset dir="${project.tests-subdirectory}/library">
+                    <include name="**/*Test.php"/>
+                </fileset>
+            </batchtest>
+        </phpunit>
+    </target>
+    
+    <!-- Composite targets -->
+    <target name="install" description="Install the entire project">
+        <phingcall target="data:install" />
+        <phingcall target="htaccess:install" />
+    </target>
+    
+    <target name="uninstall" description="Uninstall the entire project">
+        <phingcall target="data:uninstall" />
+        <phingcall target="htaccess:uninstall" />
+    </target>
+</project>

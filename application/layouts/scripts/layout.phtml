@@ -1,0 +1,42 @@
+<?php $this->headScript()->captureStart(); ?>
+var baseUrl = "<?php echo $this->baseUrl(); ?>";
+<?php $this->headScript()->captureEnd(); ?>
+<?php
+
+$this->headTitle()
+     ->setSeparator(' - ')
+     ->prepend('Xbox');
+
+$this->headMeta()
+     ->appendHttpEquiv("Content-Type", "text/html; charset=" . $this->getEncoding());
+
+$this->headLink()
+     ->appendStylesheet("http://fonts.googleapis.com/css?family=Doppio+One","all")
+     ->appendStylesheet("{$this->baseUrl()}/assets/styles/screen.css","all");
+
+$this->headScript()
+     ->setAllowArbitraryAttributes(true)
+     ->prependFile("//ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.js")
+     ->setFile("{$this->baseUrl()}/assets/scripts/require-jquery.js", 'text/javascript', array('data-main' => "{$this->baseUrl()}/assets/scripts/main.js"));
+
+echo $this->doctype();
+?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+
+<?php echo $this->headTitle(); ?>
+
+<?php echo $this->headMeta(); ?>
+
+<?php echo $this->headLink(); ?>
+
+<?php echo $this->headStyle(); ?>
+
+<?php echo $this->headScript(); ?>
+
+    </head>
+    <body>
+        <?php echo $this->flashMessages(); ?>
+        <?php echo $this->layout()->content; ?>
+    </body>
+</html>

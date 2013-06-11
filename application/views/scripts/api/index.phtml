@@ -1,0 +1,44 @@
+<?php
+
+require_once APPLICATION_PATH . '/models/Response.model.php';
+require_once APPLICATION_PATH . '/models/API.model.php';
+
+$params = $_GET;
+$response = new Response();
+
+if (!$params['method']) {
+    $response->setError('No method set');
+    echo $response;
+    return;
+}
+
+switch($params['method']) {
+
+    case 'getGames':
+        $response->setData(API::getGames());
+        break;
+
+    case 'addVote':
+        $response->setData(API::addVote($params['gameId']));
+        break;
+
+    case 'addGame':
+        $response->setData(API::addGame($params['gameTitle']));
+        break;
+
+    case 'setGotIt':
+        $response->setData(API::setGotIt($params['gameId']));
+        break;
+
+    case 'search':
+        $response->setData(API::search($params['gameTitle']));
+        break;
+
+    default:
+        $response->setError('Method "' . $params['method'] . '" not found');
+        break;
+}
+
+echo $response;
+
+?>

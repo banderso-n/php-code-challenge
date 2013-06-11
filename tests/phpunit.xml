@@ -1,0 +1,21 @@
+<phpunit bootstrap="./bootstrap.php" colors="true">
+    <testsuite name="Application Test Suite">
+        <directory>./application</directory>
+    </testsuite>
+    <testsuite name="Application Module Test Suite">
+        <directory>./application/modules/</directory>
+        <directory>../application/modules/*/tests</directory>
+    </testsuite>
+    <testsuite name="Xbox Library Test Suite">
+        <directory>./library/Xbox</directory>
+    </testsuite>
+    
+    <filter>
+        <!-- If Zend Framework is inside your project's library, uncomment this filter -->
+        <!-- 
+        <whitelist>
+            <directory suffix=".php">../../library/Zend</directory>
+        </whitelist>
+        -->
+    </filter>
+</phpunit>
